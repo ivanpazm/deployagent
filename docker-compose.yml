@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  app1:
+    image: ollama/ollama
+    container_name: app1
+    ports:
+      - "11434:11434" # Mapea el puerto 11434 al puerto 11434 dentro del contenedor
+    networks:
+      - my-network
+
+  app2:
+    image: n8nio/n8n
+    container_name: app2
+    ports:
+      - "5678:5678" # Mapea el puerto 5678 al puerto 5678 dentro del contenedor
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
