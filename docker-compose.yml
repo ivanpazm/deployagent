@@ -5,17 +5,19 @@ services:
     image: ollama/ollama
     container_name: app1
     ports:
-      - "11434:11434" # Mapea el puerto 11434 al puerto 11434 dentro del contenedor
+      - "11434:11434"
     networks:
       - my-network
+    command: ollama serve --port 11434
 
   app2:
     image: n8nio/n8n
     container_name: app2
     ports:
-      - "5678:5678" # Mapea el puerto 5678 al puerto 5678 dentro del contenedor
+      - "5678:5678"
     networks:
       - my-network
+    command: n8n start
 
 networks:
   my-network:
