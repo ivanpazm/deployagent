@@ -18,6 +18,10 @@ services:
       - "5678:5678"
     networks:
       - my-network
+    environment:
+      - N8N_VERSION=1.0.0   # Especifica la versión de n8n que deseas usar
+      - NODE_ENV=production
+      - N8N_RELEASE_TYPE=stable
     command: ["n8n", "start"]
 
 networks:
