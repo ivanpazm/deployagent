@@ -1,4 +1,3 @@
-# Usa la imagen base de Ubuntu
 FROM ubuntu:latest
 
 # Instala los paquetes necesarios

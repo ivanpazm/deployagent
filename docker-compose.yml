@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   app1:
     build:
@@ -19,7 +17,7 @@ services:
     networks:
       - my-network
     environment:
-      - N8N_VERSION=1.0.0   # Especifica la versión de n8n que deseas usar
+      - N8N_VERSION=0.211.1  # Asegúrate de especificar una versión válida de n8n
       - NODE_ENV=production
       - N8N_RELEASE_TYPE=stable
     command: ["n8n", "start"]
