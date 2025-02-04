@@ -1,37 +1,41 @@
-# Usa la imagen base de n8n
-ARG NODE_VERSION=20
-FROM n8nio/base:${NODE_VERSION}
-
-# Verifica que la versión de n8n esté especificada
-ARG N8N_VERSION
-RUN if [ -z "$N8N_VERSION" ] ; then echo "The N8N_VERSION argument is missing!" ; exit 1; fi
-
-# Metadatos de la imagen
-LABEL org.opencontainers.image.title="n8n"
-LABEL org.opencontainers.image.description="Workflow Automation Tool"
-LABEL org.opencontainers.image.source="https://github.com/n8n-io/n8n"
-LABEL org.opencontainers.image.url="https://n8n.io"
-LABEL org.opencontainers.image.version=${N8N_VERSION}
+FROM node:18-slim
 
 # Variables de entorno
-ENV N8N_VERSION=${N8N_VERSION}
-ENV NODE_ENV=production
-ENV N8N_RELEASE_TYPE=stable
+ARG N8N_VERSION
+ENV N8N_VERSION=${N8N_VERSION} \
+    NODE_ENV=production \
+    N8N_RELEASE_TYPE=stable \
+    PATH=/usr/local/lib/node_modules/n8n/bin:$PATH
+
+# Instalación de herramientas necesarias
+RUN apt-get update && \
+    apt-get install -y \
+    dos2unix \
+    curl \
+    python3 \
+    build-essential \
+    tini && \
+    rm -rf /var/lib/apt/lists/*
 
 # Instalación de n8n
-RUN set -eux; \
-    npm install -g --omit=dev n8n@${N8N_VERSION} --ignore-scripts && \
+RUN if [ -z "$N8N_VERSION" ] ; then echo "The N8N_VERSION argument is missing!" ; exit 1; fi && \
+    npm install -g n8n@${N8N_VERSION} && \
     npm rebuild --prefix=/usr/local/lib/node_modules/n8n sqlite3 && \
-    find /usr/local/lib/node_modules/n8n -type f -name "*.ts" -o -name "*.js.map" -o -name "*.vue" | xargs rm -f && \
-    rm -rf /root/.npm
+    chown -R node:node /usr/local/lib/node_modules/n8n
+
+# Configuración de directorios y permisos
+RUN mkdir -p /home/node/.n8n && \
+    chown -R node:node /home/node/.n8n && \
+    chmod 750 /home/node/.n8n
 
 # Configuración de la entrada del contenedor
-COPY docker-entrypoint.sh /
+COPY ./docker-entrypoint.sh /docker-entrypoint.sh
+RUN dos2unix /docker-entrypoint.sh && \
+    chmod +x /docker-entrypoint.sh
 
-# Permisos y usuario
-RUN \
-    mkdir .n8n && \
-    chown node:node .n8n
-ENV SHELL /bin/sh
+WORKDIR /home/node
 USER node
+
+EXPOSE 5678
+
 ENTRYPOINT ["tini", "--", "/docker-entrypoint.sh"]

@@ -1,0 +1,35 @@
+# Docker volumes
+**/data/
+volumes/
+
+# Logs
+*.log
+
+# Environment variables
+.env
+.env.*
+
+# Node modules
+node_modules/
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# IDEs y editores
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Archivos temporales
+*.tmp
+*.temp
+temp/
+
+# Archivos de respaldo
+*.bak
+*~
+
+# Archivos de Docker
+.docker/ 

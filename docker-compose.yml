@@ -1,26 +1,49 @@
 services:
-  app1:
-    build:
-      context: ./ollama
-    container_name: app1
-    ports:
-      - "11434:11434"
-    networks:
-      - my-network
-
   app2:
     build:
       context: ./n8n
+      dockerfile: Dockerfile
+      args:
+        N8N_VERSION: "0.211.1"
     container_name: app2
     ports:
       - "5678:5678"
     networks:
       - my-network
     environment:
-      - N8N_VERSION=0.211.1  # Asegúrate de especificar una versión válida de n8n
       - NODE_ENV=production
-      - N8N_RELEASE_TYPE=stable
-    command: ["n8n", "start"]
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - N8N_HOST=0.0.0.0
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - N8N_USER_FOLDER=/home/node/.n8n
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+  app1:
+    build:
+      context: ./ollama
+      dockerfile: Dockerfile
+    container_name: app1
+    ports:
+      - "11434:11434"
+    networks:
+      - my-network
+    volumes:
+      - ollama_data:/root/.ollama
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:11434 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    depends_on:
+      app2:
+        condition: service_started
+
+volumes:
+  ollama_data:
+  n8n_data:
 
 networks:
   my-network:
