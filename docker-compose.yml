@@ -18,6 +18,7 @@ services:
       - "5678:5678"
     networks:
       - my-network
+    command: ["n8n", "start"]
 
 networks:
   my-network:
