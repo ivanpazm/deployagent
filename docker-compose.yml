@@ -2,22 +2,22 @@ version: '3'
 
 services:
   app1:
-    image: ollama/ollama
+    build:
+      context: ./ollama
     container_name: app1
     ports:
       - "11434:11434"
     networks:
       - my-network
-    command: ollama serve --port 11434
 
   app2:
-    image: n8nio/n8n
+    build:
+      context: ./n8n
     container_name: app2
     ports:
       - "5678:5678"
     networks:
       - my-network
-    command: n8n start
 
 networks:
   my-network:
