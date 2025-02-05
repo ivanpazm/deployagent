@@ -1,10 +1,9 @@
 services:
   # Servicio n8n
   - type: web
-    name: n8n
+    name: n8n-ollama
     env: docker
-    dockerfilePath: ./n8n/Dockerfile
-    dockerContext: ./n8n
+    dockerfilePath: ./Dockerfile
     plan: free
     numInstances: 1
     healthCheckPath: /
@@ -17,6 +16,8 @@ services:
         value: 5678
       - key: N8N_PROTOCOL
         value: http
+      - key: N8N_VERSION
+        value: "0.211.1"
     autoDeploy: true
 
   # Servicio Ollama
