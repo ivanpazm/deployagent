@@ -6,7 +6,7 @@ services:
     dockerfilePath: ./Dockerfile
     buildCommand: |
       docker build \
-        --build-arg N8N_VERSION=0.211.1 \
+        --build-arg N8N_VERSION=1.76.3 \
         -t n8n-ollama .
     startCommand: docker run -p 5678:5678 -p 11434:11434 n8n-ollama
     plan: free
@@ -22,5 +22,5 @@ services:
       - key: N8N_PROTOCOL
         value: http
       - key: N8N_VERSION
-        value: 0.211.1
+        value: 1.76.3
     autoDeploy: true 
