@@ -25,8 +25,11 @@ RUN apk add --no-cache \
     touch /home/node/.n8n/.n8n/crash.journal && \
     chown -R node:node /home/node/.n8n && \
     chmod -R 750 /home/node/.n8n && \
-    chmod 640 /home/node/.n8n/.n8n/config && \
-    chmod 640 /home/node/.n8n/.n8n/crash.journal
+    chmod 600 /home/node/.n8n/.n8n/config && \
+    chmod 600 /home/node/.n8n/.n8n/crash.journal
+
+# Asegurarse de que n8n está instalado correctamente
+RUN npm install -g n8n
 
 # Script de entrada combinado
 COPY docker-entrypoint.sh /docker-entrypoint.sh
@@ -44,16 +47,18 @@ WORKDIR /home/node
 EXPOSE 5678 11434
 
 # Variables de entorno para n8n
-ENV N8N_HOST=0.0.0.0
-ENV N8N_PROTOCOL=http
-ENV N8N_PORT=5678
-ENV NODE_ENV=production
-ENV N8N_LOG_LEVEL=verbose
-ENV N8N_USER_FOLDER=/home/node/.n8n
-ENV N8N_DIAGNOSTICS_ENABLED=false
-ENV N8N_METRICS_ENABLED=false
-ENV N8N_SKIP_WEBHOOK_DEREGISTRATION=true
-ENV N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+ENV N8N_HOST=0.0.0.0 \
+    N8N_PROTOCOL=http \
+    N8N_PORT=5678 \
+    NODE_ENV=production \
+    N8N_LOG_LEVEL=verbose \
+    N8N_USER_FOLDER=/home/node/.n8n \
+    N8N_DIAGNOSTICS_ENABLED=false \
+    N8N_METRICS_ENABLED=false \
+    N8N_SKIP_WEBHOOK_DEREGISTRATION=true \
+    N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true \
+    OLLAMA_HOST=0.0.0.0 \
+    OLLAMA_ORIGINS=*
 
 # Usar root para poder iniciar Ollama pero cambiar a node para n8n
 USER root
