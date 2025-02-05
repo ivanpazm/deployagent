@@ -1,41 +1,41 @@
-FROM node:18-slim
-
-# Variables de entorno
-ARG N8N_VERSION
-ENV N8N_VERSION=${N8N_VERSION} \
-    NODE_ENV=production \
-    N8N_RELEASE_TYPE=stable \
-    PATH=/usr/local/lib/node_modules/n8n/bin:$PATH
+# Usar la imagen oficial de n8n
+FROM n8nio/n8n:1.76.3
 
 # Instalación de herramientas necesarias
-RUN apt-get update && \
-    apt-get install -y \
-    dos2unix \
+USER root
+RUN apk add --no-cache \
     curl \
-    python3 \
-    build-essential \
     tini \
-    ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
-
-# Instalación de n8n
-RUN if [ -z "${N8N_VERSION}" ] ; then echo "The N8N_VERSION argument is missing!" ; exit 1; fi && \
-    npm install -g n8n@${N8N_VERSION} && \
-    npm rebuild --prefix=/usr/local/lib/node_modules/n8n sqlite3 && \
-    chown -R node:node /usr/local/lib/node_modules/n8n
-
-# Instalación de Ollama y configuración de directorios
-RUN curl https://ollama.com/install.sh | sh && \
-    mkdir -p /home/node/.n8n && \
+    ca-certificates \
+    dos2unix \
+    file \
+    bash \
+    procps \
+    wget \
+    gnupg && \
+    # Descargar Ollama precompilado
+    wget https://github.com/ollama/ollama/releases/download/v0.1.27/ollama-linux-amd64 && \
+    mv ollama-linux-amd64 /usr/local/bin/ollama && \
+    chmod +x /usr/local/bin/ollama && \
+    # Configurar directorios
     mkdir -p /root/.ollama && \
+    chmod 755 /root/.ollama && \
+    mkdir -p /home/node/.n8n/.n8n && \
+    touch /home/node/.n8n/.n8n/config && \
+    touch /home/node/.n8n/.n8n/crash.journal && \
     chown -R node:node /home/node/.n8n && \
-    chmod 750 /home/node/.n8n && \
-    chmod 755 /root/.ollama
+    chmod -R 755 /home/node/.n8n && \
+    chmod 644 /home/node/.n8n/.n8n/config && \
+    chmod 644 /home/node/.n8n/.n8n/crash.journal
 
 # Script de entrada combinado
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN dos2unix /docker-entrypoint.sh && \
     chmod +x /docker-entrypoint.sh
+
+# Verificar el archivo
+RUN ls -la /docker-entrypoint.sh && \
+    file /docker-entrypoint.sh
 
 # Configurar usuario y directorio de trabajo
 WORKDIR /home/node
