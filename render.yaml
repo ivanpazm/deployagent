@@ -1,0 +1,42 @@
+services:
+  # Servicio n8n
+  - type: web
+    name: n8n
+    env: docker
+    dockerfilePath: ./n8n/Dockerfile
+    dockerContext: ./n8n
+    plan: standard
+    numInstances: 1
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: N8N_HOST
+        value: 0.0.0.0
+      - key: N8N_PORT
+        value: 5678
+      - key: N8N_PROTOCOL
+        value: http
+    disk:
+      name: n8n-data
+      mountPath: /home/node/.n8n
+      sizeGB: 10
+    autoDeploy: true
+
+  # Servicio Ollama
+  - type: web
+    name: ollama
+    env: docker
+    dockerfilePath: ./ollama/Dockerfile
+    dockerContext: ./ollama
+    plan: standard
+    numInstances: 1
+    healthCheckPath: /api/tags
+    envVars:
+      - key: OLLAMA_HOST
+        value: 0.0.0.0:11434
+    disk:
+      name: ollama-data
+      mountPath: /root/.ollama
+      sizeGB: 20
+    autoDeploy: true 
