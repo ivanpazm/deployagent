@@ -24,20 +24,25 @@ RUN if [ -z "${N8N_VERSION}" ] ; then echo "The N8N_VERSION argument is missing!
     npm rebuild --prefix=/usr/local/lib/node_modules/n8n sqlite3 && \
     chown -R node:node /usr/local/lib/node_modules/n8n
 
-# Instalación de Ollama
-RUN curl https://ollama.com/install.sh | sh
-
-# Configuración de directorios
-RUN mkdir -p /home/node/.n8n && \
+# Instalación de Ollama y configuración de directorios
+RUN curl https://ollama.com/install.sh | sh && \
+    mkdir -p /home/node/.n8n && \
     mkdir -p /root/.ollama && \
     chown -R node:node /home/node/.n8n && \
-    chmod 750 /home/node/.n8n
+    chmod 750 /home/node/.n8n && \
+    chmod 755 /root/.ollama
 
 # Script de entrada combinado
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN dos2unix /docker-entrypoint.sh && \
     chmod +x /docker-entrypoint.sh
 
+# Configurar usuario y directorio de trabajo
+WORKDIR /home/node
+
+# Exponer puertos
 EXPOSE 5678 11434
 
+# Usar root para poder iniciar Ollama pero cambiar a node para n8n
+USER root
 ENTRYPOINT ["tini", "--", "/docker-entrypoint.sh"] 

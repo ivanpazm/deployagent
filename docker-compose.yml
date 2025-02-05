@@ -2,9 +2,8 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
       args:
-        - N8N_VERSION=0.211.1
+        N8N_VERSION: "0.211.1"
     ports:
       - "5678:5678"
       - "11434:11434"
@@ -22,7 +21,7 @@ services:
       - n8n_data:/home/node/.n8n
       - ollama_data:/root/.ollama
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:11434 || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:11434/api/tags || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
