@@ -19,7 +19,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Instalación de n8n
-RUN if [ -z "$N8N_VERSION" ] ; then echo "The N8N_VERSION argument is missing!" ; exit 1; fi && \
+RUN if [ -z "${N8N_VERSION}" ] ; then echo "The N8N_VERSION argument is missing!" ; exit 1; fi && \
     npm install -g n8n@${N8N_VERSION} && \
     npm rebuild --prefix=/usr/local/lib/node_modules/n8n sqlite3 && \
     chown -R node:node /usr/local/lib/node_modules/n8n
