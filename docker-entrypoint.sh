@@ -25,16 +25,30 @@ done
 
 echo "[$(date)] Ollama está listo!"
 
+# Añadir más logging para Ollama
+echo "[$(date)] Verificando Ollama en puerto 11434..."
+curl -v http://localhost:11434/api/tags
+
 # Configurar n8n
 echo "[$(date)] Configurando n8n..."
+
 mkdir -p /home/node/.n8n/.n8n
+# Generar un UUID usando /dev/urandom
+UUID=$(od -x /dev/urandom | head -1 | awk '{OFS="-"; print $2$3,$4,$5,$6,$7$8$9}')
+cat > /home/node/.n8n/.n8n/config << EOL
+{
+  "encryptionKey": "$(head -c 32 /dev/urandom | base64)",
+  "instanceId": "${UUID}",
+  "nodes": {}
+}
+EOL
 chown -R node:node /home/node/.n8n
 chmod 750 /home/node/.n8n
 chmod 600 /home/node/.n8n/.n8n/config
 
 # Iniciar n8n como usuario node
 echo "[$(date)] Iniciando n8n..."
-su node -c "cd /home/node && /usr/local/bin/n8n start" &
+su node -c "cd /home/node && NODE_OPTIONS=\"--max-old-space-size=4096\" /usr/local/bin/n8n start" &
 N8N_PID=$!
 
 # Esperar a que ambos servicios estén funcionando

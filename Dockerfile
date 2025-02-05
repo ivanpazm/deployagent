@@ -28,25 +28,20 @@ RUN apk add --no-cache \
     chmod 600 /home/node/.n8n/.n8n/config && \
     chmod 600 /home/node/.n8n/.n8n/crash.journal
 
-# Asegurarse de que n8n está instalado correctamente
-RUN npm install -g n8n
+# Verificar la instalación de n8n
+RUN which n8n && \
+    ls -la $(which n8n) && \
+    ls -la /usr/local/lib/node_modules/n8n/bin/ || true && \
+    ls -la /usr/local/bin/n8n || true
 
 # Script de entrada combinado
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN dos2unix /docker-entrypoint.sh && \
     chmod +x /docker-entrypoint.sh
 
-# Verificar el archivo
-RUN ls -la /docker-entrypoint.sh && \
-    file /docker-entrypoint.sh
-
-# Configurar usuario y directorio de trabajo
 WORKDIR /home/node
-
-# Exponer puertos
 EXPOSE 5678 11434
 
-# Variables de entorno para n8n
 ENV N8N_HOST=0.0.0.0 \
     N8N_PROTOCOL=http \
     N8N_PORT=5678 \
@@ -60,6 +55,5 @@ ENV N8N_HOST=0.0.0.0 \
     OLLAMA_HOST=0.0.0.0 \
     OLLAMA_ORIGINS=*
 
-# Usar root para poder iniciar Ollama pero cambiar a node para n8n
 USER root
 ENTRYPOINT ["tini", "--", "/docker-entrypoint.sh"] 
