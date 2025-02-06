@@ -40,11 +40,11 @@ RUN dos2unix /docker-entrypoint.sh && \
     chmod +x /docker-entrypoint.sh
 
 WORKDIR /home/node
+# En local exponemos ambos puertos
 EXPOSE 5678 11434
 
 ENV N8N_HOST=0.0.0.0 \
     N8N_PROTOCOL=http \
-    N8N_PORT=5678 \
     NODE_ENV=production \
     N8N_LOG_LEVEL=verbose \
     N8N_USER_FOLDER=/home/node/.n8n \
@@ -52,7 +52,7 @@ ENV N8N_HOST=0.0.0.0 \
     N8N_METRICS_ENABLED=false \
     N8N_SKIP_WEBHOOK_DEREGISTRATION=true \
     N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true \
-    OLLAMA_HOST=0.0.0.0 \
+    # OLLAMA_HOST se configura en runtime \
     OLLAMA_ORIGINS=*
 
 USER root

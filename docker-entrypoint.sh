@@ -7,7 +7,13 @@ echo "[$(date)] === Iniciando servicios ==="
 echo "[$(date)] Iniciando Ollama como root..."
 mkdir -p /root/.ollama
 chmod 755 /root/.ollama
-OLLAMA_HOST=0.0.0.0 OLLAMA_ORIGINS=* ollama serve &
+# En Render usamos localhost, en local 0.0.0.0
+if [ ! -z "$RENDER" ]; then
+    export OLLAMA_HOST=127.0.0.1
+else
+    export OLLAMA_HOST=0.0.0.0
+fi
+OLLAMA_ORIGINS=* ollama serve &
 OLLAMA_PID=$!
 
 # Verificar que Ollama está funcionando
@@ -32,6 +38,10 @@ curl -v http://localhost:11434/api/tags
 # Configurar n8n
 echo "[$(date)] Configurando n8n..."
 
+# Asegurarnos de que n8n use el puerto correcto de Render
+export N8N_PORT=${PORT:-5678}
+echo "[$(date)] Puerto configurado: $N8N_PORT"
+
 mkdir -p /home/node/.n8n/.n8n
 # Generar un UUID usando /dev/urandom
 UUID=$(od -x /dev/urandom | head -1 | awk '{OFS="-"; print $2$3,$4,$5,$6,$7$8$9}')
@@ -45,11 +55,6 @@ EOL
 chown -R node:node /home/node/.n8n
 chmod 750 /home/node/.n8n
 chmod 600 /home/node/.n8n/.n8n/config
-
-# Usar el puerto proporcionado por Render o el puerto por defecto de n8n
-if [ ! -z "$PORT" ]; then
-    export N8N_PORT=$PORT
-fi
 
 # Iniciar n8n como usuario node
 echo "[$(date)] Iniciando n8n..."
