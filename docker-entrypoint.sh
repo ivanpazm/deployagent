@@ -46,6 +46,11 @@ chown -R node:node /home/node/.n8n
 chmod 750 /home/node/.n8n
 chmod 600 /home/node/.n8n/.n8n/config
 
+# Usar el puerto proporcionado por Render o el puerto por defecto de n8n
+if [ ! -z "$PORT" ]; then
+    export N8N_PORT=$PORT
+fi
+
 # Iniciar n8n como usuario node
 echo "[$(date)] Iniciando n8n..."
 su node -c "cd /home/node && NODE_OPTIONS=\"--max-old-space-size=4096\" /usr/local/bin/n8n start" &
