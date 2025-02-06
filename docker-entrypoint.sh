@@ -9,7 +9,7 @@ mkdir -p /root/.ollama
 chmod 755 /root/.ollama
 # En Render usamos localhost, en local 0.0.0.0
 if [ ! -z "$RENDER" ]; then
-    export OLLAMA_HOST=127.0.0.1
+    export OLLAMA_HOST=0.0.0.0
 else
     export OLLAMA_HOST=0.0.0.0
 fi
