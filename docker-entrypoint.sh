@@ -35,6 +35,15 @@ echo "[$(date)] Ollama está listo!"
 echo "[$(date)] Verificando Ollama en puerto 11434..."
 curl -v http://localhost:11434/api/tags
 
+# Descargar modelo si no existe
+echo "[$(date)] Verificando/Descargando modelo..."
+if ! curl -s http://localhost:11434/api/tags | grep -q "llama2"; then
+    echo "[$(date)] Descargando modelo llama2..."
+    curl -X POST http://localhost:11434/api/pull -d '{"name": "llama2"}'
+else
+    echo "[$(date)] Modelo llama2 ya está descargado"
+fi
+
 # Configurar n8n
 echo "[$(date)] Configurando n8n..."
 
