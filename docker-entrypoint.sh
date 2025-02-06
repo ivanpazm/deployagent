@@ -9,11 +9,9 @@ mkdir -p /root/.ollama
 chmod 755 /root/.ollama
 # En Render usamos localhost, en local 0.0.0.0
 if [ ! -z "$RENDER" ]; then
-    export OLLAMA_HOST="0.0.0.0"
-    export OLLAMA_PATH="/api/ollama"
+    export OLLAMA_HOST="127.0.0.1"  # Ollama solo accesible internamente en Render
 else
-    export OLLAMA_HOST="0.0.0.0"
-    export OLLAMA_PATH="/api/ollama"
+    export OLLAMA_HOST="0.0.0.0"    # Ollama accesible externamente en local
 fi
 OLLAMA_ORIGINS=* ollama serve &
 OLLAMA_PID=$!
@@ -22,7 +20,7 @@ OLLAMA_PID=$!
 echo "[$(date)] Esperando a que Ollama esté disponible..."
 ATTEMPTS=0
 MAX_ATTEMPTS=30
-until curl -s http://localhost:11434${OLLAMA_PATH}/tags >/dev/null 2>&1; do
+until curl -s http://localhost:11434/api/tags >/dev/null 2>&1; do
     ATTEMPTS=$((ATTEMPTS + 1))
     if [ $ATTEMPTS -ge $MAX_ATTEMPTS ]; then
         echo "[$(date)] ERROR: Ollama no respondió"
@@ -35,22 +33,13 @@ echo "[$(date)] Ollama está listo!"
 
 # Añadir más logging para Ollama
 echo "[$(date)] Verificando Ollama en puerto 11434..."
-curl -v http://localhost:11434${OLLAMA_PATH}/tags
+curl -v http://localhost:11434/api/tags
 
 # Configurar n8n
 echo "[$(date)] Configurando n8n..."
 
 # Asegurarnos de que n8n use el puerto correcto de Render
 export N8N_PORT=${PORT:-5678}
-if [ ! -z "$RENDER" ]; then
-    # En Render, n8n en /workflow
-    export N8N_PATH="/workflow"
-    export N8N_HOST="0.0.0.0"
-else
-    # En local, mantener la configuración actual
-    export N8N_PATH="/workflow"
-    export N8N_HOST="0.0.0.0"
-fi
 echo "[$(date)] Puerto configurado: $N8N_PORT"
 
 mkdir -p /home/node/.n8n/.n8n
