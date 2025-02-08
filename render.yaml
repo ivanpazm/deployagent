@@ -35,8 +35,14 @@ services:
       - key: OLLAMA_HOST
         value: 127.0.0.1
     dockerfilePath: ./Dockerfile
-    buildCommand: docker build -t n8n-ollama .
-    startCommand: tini -- /docker-entrypoint.sh
+    buildCommand: |
+      docker build \
+        --build-arg N8N_VERSION=1.76.3 \
+        -t n8n-ollama .
+    startCommand: |
+      /usr/local/bin/ollama serve &
+      sleep 5
+      su-exec node /usr/local/bin/n8n start --port $PORT
     numInstances: 1
     disk:
       name: data

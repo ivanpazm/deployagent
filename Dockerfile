@@ -61,5 +61,4 @@ ENV N8N_HOST=0.0.0.0 \
     # OLLAMA_HOST se configura en runtime \
     OLLAMA_ORIGINS=*
 
-USER root
-ENTRYPOINT ["tini", "--", "/docker-entrypoint.sh"] 
+# No ENTRYPOINT para Render 
