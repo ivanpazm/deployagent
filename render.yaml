@@ -28,34 +28,32 @@ services:
   - type: web
     name: deployagent
     env: docker
+    region: frankfurt
     plan: standard
-    dockerfilePath: ./Dockerfile
+    branch: main
+    healthCheckPath: /
     envVars:
+      - key: RENDER
+        value: true
       - key: N8N_HOST
-        value: "0.0.0.0"
+        value: 0.0.0.0
       - key: N8N_PROTOCOL
-        value: "http"
-      - key: N8N_PORT
-        value: "5678"
-      - key: NODE_ENV
-        value: "production"
-      - key: N8N_LOG_LEVEL
-        value: "verbose"
+        value: https
       - key: N8N_USER_FOLDER
-        value: "/home/node/.n8n"
+        value: /home/node/.n8n
       - key: N8N_DIAGNOSTICS_ENABLED
-        value: "false"
+        value: false
       - key: N8N_METRICS_ENABLED
-        value: "false"
+        value: false
       - key: N8N_SKIP_WEBHOOK_DEREGISTRATION
-        value: "true"
+        value: true
       - key: N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS
-        value: "true"
-      - key: OLLAMA_HOST
-        value: "0.0.0.0"
+        value: true
       - key: OLLAMA_ORIGINS
         value: "*"
-    healthCheckPath: /healthz
+      - key: OLLAMA_HOST
+        value: 127.0.0.1
+    dockerCommand: /docker-entrypoint.sh
     numInstances: 1
     disk:
       name: data
