@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e
-trap 'kill -TERM $OLLAMA_PID' TERM INT
 
 echo "[$(date)] === Iniciando servicios ==="
 
@@ -41,4 +40,4 @@ else
     PORT_ARG="--port 5678"
 fi
 
-su-exec node /usr/local/bin/n8n start $PORT_ARG 
+exec su-exec node /usr/local/bin/n8n start $PORT_ARG 

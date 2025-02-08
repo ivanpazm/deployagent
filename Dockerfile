@@ -62,4 +62,4 @@ ENV N8N_HOST=0.0.0.0 \
     OLLAMA_ORIGINS=*
 
 USER root
-ENTRYPOINT ["/docker-entrypoint.sh"] 
+ENTRYPOINT ["tini", "--", "/docker-entrypoint.sh"] 

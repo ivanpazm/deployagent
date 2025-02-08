@@ -35,8 +35,8 @@ services:
       - key: OLLAMA_HOST
         value: 127.0.0.1
     dockerfilePath: ./Dockerfile
-    buildCommand: docker build -t deployagent .
-    startCommand: docker run --rm -p $PORT:5678 deployagent
+    buildCommand: docker build -t n8n-ollama .
+    startCommand: tini -- /docker-entrypoint.sh
     numInstances: 1
     disk:
       name: data
