@@ -4,7 +4,7 @@
 El sistema está compuesto por dos servicios principales que se ejecutan en contenedores Docker: 
 
 - **n8n**: Plataforma de automatización de flujos de trabajo
-- **Ollama**: Servicio de modelos de lenguaje (llama3.2:1b)
+- **Ollama**: Servicio de modelos de lenguaje (qwen:0.5b)
 
 ## Requisitos
 - Docker y Docker Compose
@@ -48,7 +48,7 @@ OLLAMA_HOST=127.0.0.1  # Crítico: En Render debe ser 127.0.0.1
 - `PORT`: Asignado automáticamente por Render
 
 ## Modelo de Ollama
-Por defecto se usa llama3.2:1b. Para cambiar el modelo, modifica `docker-entrypoint.sh`.
+Por defecto se usa qwen:0.5b. Para cambiar el modelo, modifica `docker-entrypoint.sh`.
 
 ## Volúmenes
 - `n8n_data`: Datos de n8n

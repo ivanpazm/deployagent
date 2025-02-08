@@ -19,9 +19,9 @@ until curl -s http://localhost:11434/api/version > /dev/null; do
 done
 
 # Descargar el modelo si no existe
-if ! curl -s http://localhost:11434/api/tags | grep -q "llama3.2:1b"; then
-    echo "Descargando modelo llama3.2:1b..."
-    /usr/local/bin/ollama pull llama3.2:1b
+if ! curl -s http://localhost:11434/api/tags | grep -q "qwen:0.5b"; then
+    echo "Descargando modelo qwen:0.5b..."
+    /usr/local/bin/ollama pull qwen:0.5b
 fi
 
 # Iniciar n8n
