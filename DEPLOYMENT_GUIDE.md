@@ -1,27 +1,33 @@
 # Sistema de Despliegue - n8n con Ollama
 
 ## Estructura del Sistema
-
 El sistema está compuesto por dos servicios principales que se ejecutan en contenedores Docker: 
 
 - **n8n**: Plataforma de automatización de flujos de trabajo
-- **Ollama**: Servicio de modelos de lenguaje
+- **Ollama**: Servicio de modelos de lenguaje (llama3.2:1b)
+
+## Requisitos
+- Docker y Docker Compose
+- 4GB RAM mínimo recomendado
+- 10GB espacio en disco
 
 ## Configuración de Acceso
 
 ### En Local (Desarrollo)
 - **n8n**: `http://localhost:5678`
 - **Ollama API**: `http://localhost:11434/api`
+- Ollama es accesible externamente (OLLAMA_HOST=0.0.0.0)
 
 ### En Render (Producción)
 - **n8n**: `https://deployagent-9.onrender.com`
 - **Ollama API**: Solo accesible internamente por n8n
+- Ollama solo es accesible localmente (OLLAMA_HOST=127.0.0.1)
 
 ## Variables de Entorno
 
 ### Variables Requeridas en Render
-
-# Variable para detectar que estamos en Render
+```
+# Variable crítica para diferenciar entorno
 RENDER=true
 
 # Variables de n8n
@@ -35,31 +41,15 @@ N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
 
 # Variables de Ollama
 OLLAMA_ORIGINS=*
-
-### Variables Automáticas
-El sistema configura automáticamente:
-
-# En Render
-RENDER=true              # Detecta automáticamente si estamos en Render
-PORT=<puerto-asignado>   # Asignado automáticamente por Render
-
-## Desarrollo Local
-
-### Requisitos
-- Docker
-- Docker Compose
-
-### Iniciar el Sistema
-```bash
-docker-compose up
+OLLAMA_HOST=127.0.0.1  # Crítico: En Render debe ser 127.0.0.1
 ```
 
-## Pruebas de Funcionamiento
+### Variables Automáticas en Render
+- `PORT`: Asignado automáticamente por Render
 
-### Verificar n8n
-- Local: Abre `http://localhost:5678` en tu navegador
-- Render: Abre `https://deployagent-9.onrender.com` en tu navegador
+## Modelo de Ollama
+Por defecto se usa llama3.2:1b. Para cambiar el modelo, modifica `docker-entrypoint.sh`.
 
-### Verificar Ollama
-- Local: `curl http://localhost:11434/api/tags`
-- Render: Ollama solo es accesible internamente por n8n
+## Volúmenes
+- `n8n_data`: Datos de n8n
+- `ollama_data`: Modelos y datos de Ollama

@@ -12,6 +12,7 @@ RUN apk add --no-cache \
     bash \
     procps \
     wget \
+    su-exec \
     gnupg && \
     # Descargar Ollama precompilado
     wget https://github.com/ollama/ollama/releases/download/v0.1.27/ollama-linux-amd64 && \
