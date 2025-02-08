@@ -3,6 +3,10 @@ set -e
 
 echo "[$(date)] === Iniciando servicios ==="
 
+# Asegurarnos de que los directorios tienen los permisos correctos
+chown -R node:node /home/node/.n8n
+chmod -R 750 /home/node/.n8n
+
 # Configurar OLLAMA_HOST si no está definido
 if [ -z "$OLLAMA_HOST" ]; then
     export OLLAMA_HOST="0.0.0.0"
@@ -26,4 +30,5 @@ fi
 
 # Iniciar n8n
 echo "Iniciando n8n..."
-exec su-exec node n8n start 
+cd /home/node
+exec su-exec node /usr/local/bin/n8n start 

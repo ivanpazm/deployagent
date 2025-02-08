@@ -27,7 +27,10 @@ RUN apk add --no-cache \
     chown -R node:node /home/node/.n8n && \
     chmod -R 750 /home/node/.n8n && \
     chmod 600 /home/node/.n8n/.n8n/config && \
-    chmod 600 /home/node/.n8n/.n8n/crash.journal
+    chmod 600 /home/node/.n8n/.n8n/crash.journal && \
+    # Asegurarnos de que node puede ejecutar n8n
+    chown -R node:node /usr/local/lib/node_modules/n8n && \
+    chmod -R 755 /usr/local/lib/node_modules/n8n
 
 # Verificar la instalación de n8n
 RUN which n8n && \
