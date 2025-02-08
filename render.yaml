@@ -28,8 +28,7 @@ services:
         value: "*"
       - key: OLLAMA_HOST
         value: 127.0.0.1
-    buildCommand: docker build -t deployagent .
-    startCommand: docker run --rm -p $PORT:5678 -p 11434:11434 deployagent
+    dockerfilePath: ./Dockerfile
     dockerCommand: /docker-entrypoint.sh
     numInstances: 1
     disk:
