@@ -1,0 +1,13 @@
+services:
+  cid-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "80:80"      # Frontend y nginx
+    volumes:
+      - ./monitoring/frontend:/app/frontend
+      - /app/frontend/node_modules
+    environment:
+      - NODE_ENV=development
+    command: npm start 

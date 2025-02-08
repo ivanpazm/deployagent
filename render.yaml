@@ -1,0 +1,63 @@
+services:
+  # Servicio n8n
+  - type: web
+    name: n8n-ollama
+    env: docker
+    dockerfilePath: ./Dockerfile
+    buildCommand: |
+      docker build \
+        --build-arg N8N_VERSION=1.12.3 \
+        -t n8n-ollama .
+    startCommand: docker run -p 5678:5678 -p 11434:11434 n8n-ollama
+    plan: free
+    numInstances: 1
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: N8N_HOST
+        value: 0.0.0.0
+      - key: N8N_PORT
+        value: 5678
+      - key: N8N_PROTOCOL
+        value: http
+      - key: N8N_VERSION
+        value: 1.12.3
+    autoDeploy: true
+
+  - type: web
+    name: deployagent
+    env: docker
+    plan: standard
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: N8N_HOST
+        value: "0.0.0.0"
+      - key: N8N_PROTOCOL
+        value: "http"
+      - key: N8N_PORT
+        value: "5678"
+      - key: NODE_ENV
+        value: "production"
+      - key: N8N_LOG_LEVEL
+        value: "verbose"
+      - key: N8N_USER_FOLDER
+        value: "/home/node/.n8n"
+      - key: N8N_DIAGNOSTICS_ENABLED
+        value: "false"
+      - key: N8N_METRICS_ENABLED
+        value: "false"
+      - key: N8N_SKIP_WEBHOOK_DEREGISTRATION
+        value: "true"
+      - key: N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS
+        value: "true"
+      - key: OLLAMA_HOST
+        value: "0.0.0.0"
+      - key: OLLAMA_ORIGINS
+        value: "*"
+    healthCheckPath: /healthz
+    numInstances: 1
+    disk:
+      name: data
+      mountPath: /home/node/.n8n
+      sizeGB: 10 

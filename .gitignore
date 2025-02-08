@@ -1,0 +1,46 @@
+# Node
+node_modules/
+npm-debug.log
+
+# Logs
+*.log
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Volumes
+n8n_data/
+ollama_data/
+
+# Environment
+.env
+
+# Docker volumes
+**/data/
+volumes/
+
+# Environment variables
+.env.*
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# IDEs y editores
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Archivos temporales
+*.tmp
+*.temp
+temp/
+
+# Archivos de respaldo
+*.bak
+*~
+
+# Archivos de Docker
+.docker/ 

@@ -1,0 +1,13 @@
+# Etapa 1: Solo n8n
+FROM n8nio/n8n
+WORKDIR /app
+
+# Verificación básica
+RUN node --version && \
+    npm --version
+
+# Exponer puertos
+EXPOSE 5678
+
+# Comando de inicio simple
+CMD ["n8n", "start"] 

@@ -1,0 +1,26 @@
+services:
+  n8n-ollama:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5678:5678"  # n8n
+      - "11434:11434" # ollama
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ollama_data:/root/.ollama
+    environment:
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - NODE_ENV=production
+    networks:
+      - default
+
+volumes:
+  n8n_data:
+  ollama_data:
+
+networks:
+  default:
+    driver: bridge

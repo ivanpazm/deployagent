@@ -1,0 +1,18 @@
+{
+  "name": "deployagent",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "rebuild": "powershell -File .\\monitoring\\scripts\\rebuild.ps1",
+    "rebuild:force": "powershell -File .\\monitoring\\scripts\\rebuild.ps1 -Force",
+    "dev": "powershell -File .\\monitoring\\scripts\\dev.ps1",
+    "dev:clean": "powershell -File .\\monitoring\\scripts\\dev.ps1 -Clean",
+    "start": "cd monitoring/frontend && npm start",
+    "build": "cd monitoring/frontend && npm run build",
+    "test": "cd monitoring/frontend && npm test"
+  },
+  "workspaces": [
+    "monitoring/frontend",
+    "monitoring/backend"
+  ]
+} 

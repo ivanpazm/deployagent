@@ -1,0 +1,16 @@
+FROM node:16
+
+WORKDIR /app/frontend
+
+# Instalar dependencias primero
+COPY monitoring/frontend/package*.json ./
+RUN npm install --legacy-peer-deps
+
+# Copiar el resto del código
+COPY monitoring/frontend .
+
+# Exponer puerto para desarrollo
+EXPOSE 80
+
+# Iniciar en modo desarrollo
+CMD ["npm", "start"] 
