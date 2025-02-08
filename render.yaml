@@ -1,31 +1,6 @@
 services:
   # Servicio n8n
   - type: web
-    name: n8n-ollama
-    env: docker
-    dockerfilePath: ./Dockerfile
-    buildCommand: |
-      docker build \
-        --build-arg N8N_VERSION=1.12.3 \
-        -t n8n-ollama .
-    startCommand: docker run -p 5678:5678 -p 11434:11434 n8n-ollama
-    plan: free
-    numInstances: 1
-    healthCheckPath: /
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: N8N_HOST
-        value: 0.0.0.0
-      - key: N8N_PORT
-        value: 5678
-      - key: N8N_PROTOCOL
-        value: http
-      - key: N8N_VERSION
-        value: 1.12.3
-    autoDeploy: true
-
-  - type: web
     name: deployagent
     env: docker
     region: frankfurt
@@ -53,6 +28,8 @@ services:
         value: "*"
       - key: OLLAMA_HOST
         value: 127.0.0.1
+    buildCommand: docker build -t deployagent .
+    startCommand: docker run --rm -p $PORT:5678 -p 11434:11434 deployagent
     dockerCommand: /docker-entrypoint.sh
     numInstances: 1
     disk:
