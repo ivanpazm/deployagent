@@ -6,14 +6,12 @@ services:
     region: frankfurt
     plan: standard
     branch: main
-    healthCheckPath: /healthz
+    healthCheckPath: /
     envVars:
       - key: RENDER
         value: true
       - key: N8N_HOST
         value: 0.0.0.0
-      - key: N8N_PORT
-        value: "5678"
       - key: N8N_PROTOCOL
         value: https
       - key: N8N_USER_FOLDER
@@ -37,14 +35,9 @@ services:
       - key: OLLAMA_HOST
         value: 127.0.0.1
     dockerfilePath: ./Dockerfile
-    dockerCommand: /docker-entrypoint.sh
+    startCommand: /docker-entrypoint.sh
     numInstances: 1
     disk:
       name: data
       mountPath: /home/node/.n8n
       sizeGB: 10
-    port:
-      fromService:
-        type: web
-        name: deployagent
-        envVarKey: PORT

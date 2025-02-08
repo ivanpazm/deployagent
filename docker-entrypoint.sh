@@ -35,7 +35,9 @@ cd /home/node
 
 # Usar PORT de Render si está definido
 if [ ! -z "$PORT" ]; then
-    export N8N_PORT=$PORT
+    PORT_ARG="--port $PORT"
+else
+    PORT_ARG="--port 5678"
 fi
 
-exec su-exec node /usr/local/bin/n8n start 
+exec su-exec node /usr/local/bin/n8n start $PORT_ARG 
