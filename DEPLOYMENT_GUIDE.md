@@ -41,7 +41,7 @@ N8N_DIAGNOSTICS_ENABLED=false
 N8N_METRICS_ENABLED=false
 N8N_SKIP_WEBHOOK_DEREGISTRATION=true
 N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
-N8N_ENCRYPTION_KEY=your-secret-key-min-32-chars-long  # Cambiar en producción
+N8N_ENCRYPTION_KEY=dK8xJ2mP9nQ7vR4tL5wC3bE6yH8uM1pX  # Clave por defecto
 
 # Variables de Ollama
 OLLAMA_ORIGINS=*
