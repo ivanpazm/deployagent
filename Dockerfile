@@ -36,12 +36,14 @@ RUN apk add --no-cache \
 RUN which n8n && \
     ls -la $(which n8n) && \
     ls -la /usr/local/lib/node_modules/n8n/bin/ || true && \
-    ls -la /usr/local/bin/n8n || true
+    ls -la /usr/local/bin/n8n || true && \
+    chmod +x /usr/local/bin/n8n
 
 # Script de entrada combinado
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN dos2unix /docker-entrypoint.sh && \
-    chmod +x /docker-entrypoint.sh
+    chmod +x /docker-entrypoint.sh && \
+    ln -sf /usr/local/bin/n8n /usr/bin/n8n
 
 WORKDIR /home/node
 # En local exponemos ambos puertos

@@ -6,16 +6,22 @@ services:
     region: frankfurt
     plan: standard
     branch: main
-    healthCheckPath: /
+    healthCheckPath: /healthz
     envVars:
       - key: RENDER
         value: true
       - key: N8N_HOST
         value: 0.0.0.0
+      - key: N8N_PORT
+        value: "5678"
       - key: N8N_PROTOCOL
         value: https
       - key: N8N_USER_FOLDER
         value: /home/node/.n8n
+      - key: NODE_ENV
+        value: production
+      - key: N8N_LOG_LEVEL
+        value: verbose
       - key: N8N_DIAGNOSTICS_ENABLED
         value: false
       - key: N8N_METRICS_ENABLED
@@ -24,6 +30,8 @@ services:
         value: true
       - key: N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS
         value: true
+      - key: N8N_ENCRYPTION_KEY
+        value: "your-secret-key-min-32-chars-long"
       - key: OLLAMA_ORIGINS
         value: "*"
       - key: OLLAMA_HOST
@@ -34,4 +42,9 @@ services:
     disk:
       name: data
       mountPath: /home/node/.n8n
-      sizeGB: 10 
+      sizeGB: 10
+    port:
+      fromService:
+        type: web
+        name: deployagent
+        envVarKey: PORT
