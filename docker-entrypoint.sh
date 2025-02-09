@@ -5,9 +5,15 @@ set -e
 if [ "$RENDER" = "true" ]; then
     echo "[$(date)] Iniciando en modo Render..."
     export N8N_PORT=$PORT
+    echo "[$(date)] Puerto configurado: $PORT"
     # Asegurar que los directorios existen y tienen permisos correctos
     mkdir -p /data
     chown -R node:node /data
+
+    # Configuración específica de red para Render
+    echo "[$(date)] Configurando red para Render..."
+    export OLLAMA_HOST="127.0.0.1"
+    export OLLAMA_ORIGINS="https://${RENDER_EXTERNAL_URL}"
 fi
 
 # Función para manejar la terminación (✅ PUNTO CRÍTICO 7.2 - Manejo de señales)
@@ -167,15 +173,17 @@ gosu node n8n start &
 N8N_PID=$!
 echo "[$(date)] N8N iniciado con PID: $N8N_PID"
 
-# Esperar un momento y verificar que N8N está escuchando (✅ PUNTO CRÍTICO 4.3 - Verificación)
+# Esperar un momento y verificar que N8N está escuchando
 echo "[$(date)] Esperando a que N8N inicie..."
 sleep 10
-if ! curl -s http://127.0.0.1:5678/healthz > /dev/null; then
+# Determinar el puerto correcto según el entorno
+N8N_CHECK_PORT=${PORT:-5678}
+if ! curl -s "http://127.0.0.1:${N8N_CHECK_PORT}/healthz" > /dev/null; then
     echo "[$(date)] === Últimas líneas del log de N8N ==="
     ps aux | grep n8n || true
     echo "[$(date)] Estado del proceso N8N:"
     kill -0 $N8N_PID 2>&1 || echo "Proceso no encontrado"
-    echo "[$(date)] ERROR: N8N no está respondiendo en el puerto 5678"
+    echo "[$(date)] ERROR: N8N no está respondiendo en el puerto ${N8N_CHECK_PORT}"
     exit 1
 fi
 
