@@ -1,9 +1,6 @@
 services:
   app:
-    build:
-      context: .
-      args:
-        N8N_VERSION: "1.12.3"
+    build: .
     ports:
       - "5678:5678"
       - "11434:11434"
@@ -11,18 +8,20 @@ services:
       - my-network
     environment:
       - NODE_ENV=production
-      - N8N_VERSION=1.12.3
       - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=false
       - N8N_HOST=0.0.0.0
       - N8N_PORT=5678
       - N8N_PROTOCOL=http
       - N8N_USER_FOLDER=/home/node/.n8n
-    entrypoint: ["/docker-entrypoint.sh"]
+      - N8N_LOG_LEVEL=verbose
+      - OLLAMA_HOST=0.0.0.0
+      - OLLAMA_ORIGINS=*
+    command: ["/docker-entrypoint.sh"]
     volumes:
       - n8n_data:/home/node/.n8n
       - ollama_data:/root/.ollama
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:11434/api/tags || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://0.0.0.0:11434/api/version || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
