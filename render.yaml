@@ -12,6 +12,8 @@ services:
     envVars:
       - key: RENDER
         value: "true"
+      - key: PORT
+        value: "3000"
       # Variables críticas N8N
       - key: N8N_BASIC_AUTH_ACTIVE
         value: "true"
@@ -29,8 +31,6 @@ services:
         value: "production"
       - key: N8N_HOST
         value: "0.0.0.0"
-      - key: N8N_PORT
-        value: "3000"
       - key: N8N_PROTOCOL
         value: "https"
       - key: N8N_USER_FOLDER

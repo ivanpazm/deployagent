@@ -24,7 +24,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     rm -rf /var/lib/apt/lists/*
 
 # Crear directorios necesarios
-RUN mkdir -p /usr/local/bin /lib/x86_64-linux-gnu
+RUN mkdir -p /usr/local/bin /lib/x86_64-linux-gnu /data
 
 # Copiar Ollama desde la imagen oficial
 COPY --from=ollama /usr/bin/ollama /usr/local/bin/ollama

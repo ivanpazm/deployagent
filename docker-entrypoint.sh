@@ -1,6 +1,15 @@
 #!/bin/bash
 set -e
 
+# Configuración específica para Render
+if [ "$RENDER" = "true" ]; then
+    echo "[$(date)] Iniciando en modo Render..."
+    export N8N_PORT=$PORT
+    # Asegurar que los directorios existen y tienen permisos correctos
+    mkdir -p /data
+    chown -R node:node /data
+fi
+
 # Función para manejar la terminación (✅ PUNTO CRÍTICO 7.2 - Manejo de señales)
 cleanup() {
     echo "Deteniendo servicios..."
