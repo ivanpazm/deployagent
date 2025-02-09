@@ -1,0 +1,42 @@
+app = "n8n-ollama"
+primary_region = "mad"  # Madrid para mejor latencia
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "3000"
+  NODE_ENV = "production"
+  N8N_HOST = "0.0.0.0"
+  N8N_PROTOCOL = "https"
+  N8N_DISABLE_TUNNEL = "true"
+  N8N_METRICS_DISABLED = "true"
+  N8N_DIAGNOSTICS_DISABLED = "true"
+  N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS = "true"
+  N8N_SKIP_WEBHOOK_DEREGISTRATION = "true"
+  N8N_LOG_LEVEL = "verbose"
+  OLLAMA_HOST = "127.0.0.1"
+  OLLAMA_SKIP_GPU_DETECTION = "true"
+  OLLAMA_CPU_ONLY = "true"
+  OLLAMA_MODELS = "llama3.2:1b"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
+
+[[mounts]]
+  source = "n8n_data"
+  destination = "/home/node/.n8n"
+
+[[mounts]]
+  source = "ollama_data"
+  destination = "/root/.ollama"
+
+[[vm]]
+  memory = "4gb"
+  cpu_kind = "shared"
+  cpus = 2 

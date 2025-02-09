@@ -62,3 +62,106 @@ Por defecto se usa qwen:0.5b. Para cambiar el modelo, modifica `docker-entrypoin
 ## Volúmenes
 - `n8n_data`: Datos de n8n
 - `ollama_data`: Modelos y datos de Ollama
+
+# Guía de Despliegue en Fly.io
+
+## Requisitos Previos
+1. Instalar Flyctl
+```bash
+# Windows (PowerShell como administrador)
+iwr https://fly.io/install.ps1 -useb | iex
+
+# MacOS/Linux
+curl -L https://fly.io/install.sh | sh
+```
+
+2. Autenticarse
+```bash
+fly auth signup  # Para nueva cuenta
+# o
+fly auth login   # Para cuenta existente
+```
+
+## Pasos de Despliegue
+
+1. Crear volúmenes persistentes
+```bash
+fly volumes create n8n_data --size 1 --region mad
+fly volumes create ollama_data --size 10 --region mad
+```
+
+2. Configurar secretos
+```bash
+fly secrets set N8N_BASIC_AUTH_USER=admin
+fly secrets set N8N_BASIC_AUTH_PASSWORD=<contraseña-segura>
+fly secrets set N8N_ENCRYPTION_KEY=$(openssl rand -hex 24)
+```
+
+3. Desplegar la aplicación
+```bash
+fly launch
+fly deploy
+```
+
+4. Verificar el despliegue
+```bash
+fly status
+fly logs
+```
+
+## Variables de Entorno
+- `N8N_BASIC_AUTH_USER`: Usuario admin
+- `N8N_BASIC_AUTH_PASSWORD`: Contraseña segura
+- `N8N_ENCRYPTION_KEY`: Clave de encriptación
+- `OLLAMA_ORIGINS`: Se configura automáticamente
+
+## Monitoreo
+```bash
+# Ver logs en tiempo real
+fly logs
+
+# Estado de la aplicación
+fly status
+
+# Información de volúmenes
+fly volumes list
+```
+
+## Backups
+1. N8N Workflows
+```bash
+fly ssh console
+cd /home/node/.n8n
+tar czf /backup/n8n-backup.tar.gz .
+exit
+fly sftp get /backup/n8n-backup.tar.gz
+```
+
+2. Modelos Ollama
+```bash
+fly ssh console
+cd /root/.ollama
+tar czf /backup/ollama-backup.tar.gz .
+exit
+fly sftp get /backup/ollama-backup.tar.gz
+```
+
+### Opción 1: Despliegue Automatizado
+```bash
+# Windows PowerShell
+./deploy-to-fly.ps1
+
+# Linux/MacOS
+chmod +x deploy-to-fly.sh
+./deploy-to-fly.sh
+```
+
+### Opción 2: Despliegue Manual
+```bash
+# Windows PowerShell
+./deploy-to-fly.ps1
+
+# Linux/MacOS
+chmod +x deploy-to-fly.sh
+./deploy-to-fly.sh
+```
