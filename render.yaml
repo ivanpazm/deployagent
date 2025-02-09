@@ -1,33 +1,30 @@
 # Configuración de Render.com
 services:
   - type: web
-    name: n8n-ollama
+    name: deployagent
     env: docker
     region: frankfurt
     plan: starter-plus
     branch: main
     dockerfilePath: ./Dockerfile
-    dockerCommand: /docker-entrypoint.sh
-    numInstances: 1
-    healthCheckPath: /healthz
+    startCommand: /docker-entrypoint.sh
+    healthCheckPath: /
     envVars:
       - key: RENDER
         value: "true"
-      # N8N Seguridad
+      # Variables críticas N8N
       - key: N8N_BASIC_AUTH_ACTIVE
         value: "true"
-      - key: N8N_BASIC_AUTH_USER
-        sync: false  # Secreto
-      - key: N8N_BASIC_AUTH_PASSWORD
-        sync: false  # Secreto
-      - key: N8N_ENCRYPTION_KEY
-        generateValue: true  # Generado automáticamente
-      - key: N8N_JWT_SECRET
-        generateValue: true  # Generado automáticamente
+      - key: N8N_DISABLE_TUNNEL
+        value: "true"
+      - key: N8N_METRICS_DISABLED
+        value: "true"
+      - key: N8N_DIAGNOSTICS_DISABLED
+        value: "true"
       - key: N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS
         value: "true"
-      
-      # N8N Configuración
+      - key: N8N_ENCRYPTION_KEY
+        value: "dK8xJ2mP9nQ7vR4tL5wC3bE6yH8uM1pX"  # Cambiar en producción
       - key: NODE_ENV
         value: "production"
       - key: N8N_HOST
@@ -36,35 +33,20 @@ services:
         value: "3000"
       - key: N8N_PROTOCOL
         value: "https"
-      - key: N8N_DISABLE_TUNNEL
-        value: "true"
-      - key: N8N_METRICS_DISABLED
-        value: "true"
-      - key: N8N_DIAGNOSTICS_DISABLED
-        value: "true"
       - key: N8N_USER_FOLDER
         value: "/home/node/.n8n"
       - key: N8N_LOG_LEVEL
         value: "verbose"
       - key: N8N_SKIP_WEBHOOK_DEREGISTRATION
         value: "true"
-      - key: WEBHOOK_URL
-        fromService:
-          type: web
-          name: n8n-ollama
-          property: url
-
-      # Ollama Configuración
+      # Ollama
       - key: OLLAMA_HOST
         value: "127.0.0.1"
       - key: OLLAMA_ORIGINS
-        fromService:
-          type: web
-          name: n8n-ollama
-          property: url
-      - key: OLLAMA_MODELS
-        value: "llama3.2:1b"
+        value: "https://${RENDER_EXTERNAL_URL}"
       - key: OLLAMA_SKIP_GPU_DETECTION
         value: "true"
       - key: OLLAMA_CPU_ONLY
         value: "true"
+      - key: OLLAMA_MODELS
+        value: "llama3.2:1b"
