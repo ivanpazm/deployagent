@@ -32,4 +32,19 @@ temp/
 *~
 
 # Archivos de Docker
+.docker/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# Backups
+backups/
+
+# Datos
+data/
+
+# Archivos de Docker
 .docker/ 

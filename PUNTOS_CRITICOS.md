@@ -779,4 +779,21 @@ seguridad:
 webhooks:
   - Configurar WEBHOOK_URL con la URL final de Render
   - Verificar redirecciones HTTPS
+```
+
+### Oracle Cloud
+```yaml
+puntos_criticos:
+  - Asegurar que el compartment_id está configurado en terraform/variables.tf
+  - Verificar que la región es correcta (eu-madrid-1)
+  - Los puertos 80 y 22 deben estar abiertos en el security list
+
+recursos_minimos:
+  cpu: 4 OCPUs
+  ram: 24GB
+  storage: 100GB
+
+directorios:
+  - /home/opc/n8n-ollama/data/n8n
+  - /home/opc/n8n-ollama/data/ollama
 ``` 

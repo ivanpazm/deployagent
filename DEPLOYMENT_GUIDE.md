@@ -165,3 +165,39 @@ chmod +x deploy-to-fly.sh
 chmod +x deploy-to-fly.sh
 ./deploy-to-fly.sh
 ```
+
+## Opciones de Despliegue
+
+### Oracle Cloud (Recomendado)
+
+#### Requisitos Previos
+1. Cuenta en Oracle Cloud (Free Tier)
+2. OCI CLI instalado
+3. Terraform instalado
+
+#### Pasos de Despliegue
+```bash
+# Windows PowerShell
+./deploy-to-oracle.ps1
+
+# Linux/MacOS
+chmod +x deploy-to-oracle.sh
+./deploy-to-oracle.sh
+```
+
+#### Recursos Creados
+- VCN con subnet pública
+- Instancia ARM (4 OCPUs, 24GB RAM)
+- Volúmenes para datos
+- Reglas de seguridad (puertos 80, 443, 22)
+
+#### Verificación
+```bash
+# Verificar estado
+terraform show
+
+# Ver logs
+ssh opc@<instance_ip> "docker-compose logs -f"
+```
+
+### Fly.io (Alternativa)
