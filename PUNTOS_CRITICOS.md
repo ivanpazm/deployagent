@@ -117,6 +117,7 @@ seguridad:
   N8N_BASIC_AUTH_PASSWORD: "[contraseña-segura]"
   N8N_ENCRYPTION_KEY: "[generado-con-openssl]"
   N8N_JWT_SECRET: "[generado-con-openssl]"
+  N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "true"
 
 configuración:
   NODE_ENV: "production"
@@ -128,13 +129,19 @@ configuración:
   N8N_DIAGNOSTICS_DISABLED: "true"
   N8N_USER_FOLDER: "/home/node/.n8n"
   WEBHOOK_URL: "https://[tu-app].onrender.com"
+  N8N_LOG_LEVEL: "verbose"
+  N8N_SKIP_WEBHOOK_DEREGISTRATION: "true"
 
 ollama:
-  OLLAMA_HOST: "0.0.0.0"
+  OLLAMA_HOST: "127.0.0.1"  # Crítico: En Render debe ser 127.0.0.1
   OLLAMA_ORIGINS: "https://[tu-app].onrender.com"
   OLLAMA_MODELS: "llama3.2:1b"
   OLLAMA_SKIP_GPU_DETECTION: "true"
   OLLAMA_CPU_ONLY: "true"
+
+# Variable de Control de Entorno
+control:
+  RENDER: "true"  # Indica que estamos en entorno Render
 ```
 
 #### Ajustes Necesarios
@@ -749,4 +756,27 @@ RENDER:
       RENDER=false docker-compose up
     producción: |
       RENDER=true en variables de entorno de Render.com
+```
+
+### Valores por Defecto (No usar en producción)
+```yaml
+N8N_ENCRYPTION_KEY: "dK8xJ2mP9nQ7vR4tL5wC3bE6yH8uM1pX"  # Solo desarrollo
+N8N_BASIC_AUTH_USER: "admin"  # Cambiar en producción
+N8N_BASIC_AUTH_PASSWORD: "admin123"  # Cambiar en producción
+```
+
+### Notas Importantes
+```yaml
+puertos:
+  - N8N_PORT será sobreescrito por $PORT en Render
+  - Ollama debe usar 127.0.0.1 en producción
+
+seguridad:
+  - Generar claves seguras con openssl
+  - No usar valores por defecto en producción
+  - Habilitar autenticación básica
+
+webhooks:
+  - Configurar WEBHOOK_URL con la URL final de Render
+  - Verificar redirecciones HTTPS
 ``` 

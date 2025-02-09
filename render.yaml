@@ -1,39 +1,70 @@
+# Configuración de Render.com
 services:
-  # Servicio n8n
   - type: web
-    name: deployagent
+    name: n8n-ollama
     env: docker
     region: frankfurt
-    plan: standard
+    plan: starter-plus
     branch: main
-    healthCheckPath: /
+    dockerfilePath: ./Dockerfile
+    dockerCommand: /docker-entrypoint.sh
+    numInstances: 1
+    healthCheckPath: /healthz
     envVars:
       - key: RENDER
-        value: true
-      - key: N8N_HOST
-        value: 0.0.0.0
-      - key: N8N_PROTOCOL
-        value: https
-      - key: N8N_USER_FOLDER
-        value: /home/node/.n8n
-      - key: NODE_ENV
-        value: production
-      - key: N8N_LOG_LEVEL
-        value: verbose
-      - key: N8N_DIAGNOSTICS_ENABLED
-        value: false
-      - key: N8N_METRICS_ENABLED
-        value: false
-      - key: N8N_SKIP_WEBHOOK_DEREGISTRATION
-        value: true
-      - key: N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS
-        value: true
+        value: "true"
+      # N8N Seguridad
+      - key: N8N_BASIC_AUTH_ACTIVE
+        value: "true"
+      - key: N8N_BASIC_AUTH_USER
+        sync: false  # Secreto
+      - key: N8N_BASIC_AUTH_PASSWORD
+        sync: false  # Secreto
       - key: N8N_ENCRYPTION_KEY
-        value: "dK8xJ2mP9nQ7vR4tL5wC3bE6yH8uM1pX"
-      - key: OLLAMA_ORIGINS
-        value: "*"
+        generateValue: true  # Generado automáticamente
+      - key: N8N_JWT_SECRET
+        generateValue: true  # Generado automáticamente
+      - key: N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS
+        value: "true"
+      
+      # N8N Configuración
+      - key: NODE_ENV
+        value: "production"
+      - key: N8N_HOST
+        value: "0.0.0.0"
+      - key: N8N_PORT
+        value: "3000"
+      - key: N8N_PROTOCOL
+        value: "https"
+      - key: N8N_DISABLE_TUNNEL
+        value: "true"
+      - key: N8N_METRICS_DISABLED
+        value: "true"
+      - key: N8N_DIAGNOSTICS_DISABLED
+        value: "true"
+      - key: N8N_USER_FOLDER
+        value: "/home/node/.n8n"
+      - key: N8N_LOG_LEVEL
+        value: "verbose"
+      - key: N8N_SKIP_WEBHOOK_DEREGISTRATION
+        value: "true"
+      - key: WEBHOOK_URL
+        fromService:
+          type: web
+          name: n8n-ollama
+          property: url
+
+      # Ollama Configuración
       - key: OLLAMA_HOST
-        value: 127.0.0.1
-    dockerfilePath: Dockerfile
-    startCommand: /docker-entrypoint.sh
-    numInstances: 1
+        value: "127.0.0.1"
+      - key: OLLAMA_ORIGINS
+        fromService:
+          type: web
+          name: n8n-ollama
+          property: url
+      - key: OLLAMA_MODELS
+        value: "llama3.2:1b"
+      - key: OLLAMA_SKIP_GPU_DETECTION
+        value: "true"
+      - key: OLLAMA_CPU_ONLY
+        value: "true"
