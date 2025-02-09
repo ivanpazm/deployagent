@@ -1,48 +1,63 @@
 terraform {
   required_providers {
-    oci = {
-      source = "oracle/oci"
+    google = {
+      source = "hashicorp/google"
       version = "~> 4.0"
     }
   }
 }
 
-provider "oci" {
-  region = var.region
+provider "google" {
+  project = var.project_id
+  region  = var.region
 }
 
-# VCN
-resource "oci_core_vcn" "n8n_ollama_vcn" {
-  compartment_id = var.compartment_id
-  cidr_block     = "10.0.0.0/16"
-  display_name   = "n8n-ollama-vcn"
+# VPC
+resource "google_compute_network" "vpc" {
+  name                    = "n8n-ollama-vpc"
+  auto_create_subnetworks = false
 }
 
 # Subnet
-resource "oci_core_subnet" "n8n_ollama_subnet" {
-  compartment_id = var.compartment_id
-  vcn_id         = oci_core_vcn.n8n_ollama_vcn.id
-  cidr_block     = "10.0.1.0/24"
-  display_name   = "n8n-ollama-subnet"
+resource "google_compute_subnetwork" "subnet" {
+  name          = "n8n-ollama-subnet"
+  ip_cidr_range = "10.0.0.0/24"
+  region        = var.region
+  network       = google_compute_network.vpc.id
 }
 
-# Compute Instance
-resource "oci_core_instance" "n8n_ollama_instance" {
-  compartment_id = var.compartment_id
-  shape         = "VM.Standard.A1.Flex"
-  display_name  = "n8n-ollama"
+# Firewall
+resource "google_compute_firewall" "allow_http" {
+  name    = "allow-http"
+  network = google_compute_network.vpc.id
 
-  shape_config {
-    ocpus = 4
-    memory_in_gbs = 24
+  allow {
+    protocol = "tcp"
+    ports    = ["80", "22"]
   }
 
-  source_details {
-    source_type = "image"
-    source_id   = var.image_id
+  source_ranges = ["0.0.0.0/0"]
+}
+
+# VM Instance
+resource "google_compute_instance" "n8n_ollama" {
+  name         = "n8n-ollama"
+  machine_type = "e2-standard-4"  # 4 vCPUs, 16GB RAM
+  zone         = "${var.region}-b"
+
+  boot_disk {
+    initialize_params {
+      image = "ubuntu-os-cloud/ubuntu-2204-lts"
+      size  = 100
+    }
   }
 
-  create_vnic_details {
-    subnet_id = oci_core_subnet.n8n_ollama_subnet.id
+  network_interface {
+    subnetwork = google_compute_subnetwork.subnet.id
+    access_config {
+      // Ephemeral public IP
+    }
   }
+
+  metadata_startup_script = file("${path.module}/startup.sh")
 } 

@@ -168,28 +168,28 @@ chmod +x deploy-to-fly.sh
 
 ## Opciones de Despliegue
 
-### Oracle Cloud (Recomendado)
+### Google Cloud Platform (Recomendado)
 
 #### Requisitos Previos
-1. Cuenta en Oracle Cloud (Free Tier)
-2. OCI CLI instalado
+1. Cuenta en Google Cloud Platform
+2. Google Cloud SDK instalado
 3. Terraform instalado
 
 #### Pasos de Despliegue
 ```bash
 # Windows PowerShell
-./deploy-to-oracle.ps1
+./deploy-to-gcp.ps1 -project_id "tu-proyecto-id"
 
 # Linux/MacOS
-chmod +x deploy-to-oracle.sh
-./deploy-to-oracle.sh
+chmod +x deploy-to-gcp.sh
+./deploy-to-gcp.sh "tu-proyecto-id"
 ```
 
 #### Recursos Creados
-- VCN con subnet pública
-- Instancia ARM (4 OCPUs, 24GB RAM)
+- VPC con subnet
+- Instancia (4 vCPUs, 16GB RAM)
 - Volúmenes para datos
-- Reglas de seguridad (puertos 80, 443, 22)
+- Reglas de firewall (puertos 80, 22)
 
 #### Verificación
 ```bash

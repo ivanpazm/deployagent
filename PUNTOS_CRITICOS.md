@@ -781,19 +781,19 @@ webhooks:
   - Verificar redirecciones HTTPS
 ```
 
-### Oracle Cloud
+### Google Cloud Platform
 ```yaml
 puntos_criticos:
-  - Asegurar que el compartment_id está configurado en terraform/variables.tf
-  - Verificar que la región es correcta (eu-madrid-1)
+  - Asegurar que el project_id está configurado correctamente
+  - Verificar que la región es correcta (europe-west1)
   - Los puertos 80 y 22 deben estar abiertos en el security list
 
 recursos_minimos:
-  cpu: 4 OCPUs
-  ram: 24GB
+  cpu: 4 vCPUs
+  ram: 16GB
   storage: 100GB
 
 directorios:
-  - /home/opc/n8n-ollama/data/n8n
-  - /home/opc/n8n-ollama/data/ollama
+  - /n8n-ollama/data/n8n
+  - /n8n-ollama/data/ollama
 ``` 

@@ -39,6 +39,8 @@ temp/
 *.tfstate
 *.tfstate.*
 .terraform.lock.hcl
+terraform.tfvars
+*.auto.tfvars
 
 # Backups
 backups/
@@ -47,4 +49,8 @@ backups/
 data/
 
 # Archivos de Docker
-.docker/ 
+.docker/
+
+# Google Cloud
+.config/gcloud/
+credentials.json 
