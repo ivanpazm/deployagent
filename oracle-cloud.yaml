@@ -1,0 +1,27 @@
+# Configuración para Oracle Cloud Infrastructure (OCI)
+instance:
+  shape: "VM.Standard.A1.Flex"
+  ocpus: 4
+  memory: 24
+  boot_volume_size: 100
+
+network:
+  vcn_name: "n8n-ollama-vcn"
+  subnet_name: "n8n-ollama-subnet"
+  security_list:
+    - protocol: "tcp"
+      port: 80
+    - protocol: "tcp"
+      port: 443
+
+volumes:
+  - name: "n8n_data"
+    size: 50  # GB
+    mount: "/home/node/.n8n"
+  - name: "ollama_data"
+    size: 100  # GB
+    mount: "/root/.ollama"
+
+docker:
+  compose_file: "docker-compose.yml"
+  env_file: ".env.production" 
